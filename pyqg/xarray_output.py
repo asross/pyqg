@@ -23,13 +23,14 @@ dim_database = {
     'uh': spectral_dims,
     'vh': spectral_dims,
     'ph': spectral_dims, 
+    'dqhdt': spectral_dims,
     'Ubg': ('lev'),
     'Qy': ('lev'),
 }
 
 # dict for variable dimensions
 var_attr_database = {
-    'q': {'long_name': 'potential vorticity in real space', 'units': 'second -1',},
+    'q': {'long_name': 'potential vorticity in real space', 'units': 'second ^-1',},
     'u': {'long_name': 'zonal velocity anomaly', 'units': 'meters second ^-1',},
     'v': {'long_name': 'meridional velocity anomaly', 'units': 'meters second ^-1',},
     'ufull': {'long_name': 'zonal full velocities in real space', 'units': 'meters second ^-1',},
@@ -40,6 +41,9 @@ var_attr_database = {
     'ph': {'long_name': 'streamfunction in spectral space', 'units': 'meters squared second ^-1',},
     'Ubg': {'long_name': 'background zonal velocity', 'units': 'meters second ^-1',},
     'Qy': {'long_name': 'background potential vorticity gradient', 'units': 'second ^-1 meter ^-1',} , 
+    'dqhdt': {'long_name': 'time derivative of potential vorticity in spectral space', 'units': 'second ^-2',},
+    'dqdt': {'long_name': 'time derivative of potential vorticity in real space', 'units': 'second ^-2',},
+    'p': {'long_name': 'streamfunction in real space', 'units': 'meters squared second ^-1',},
 }
 
 # dict for coordinate dimensions

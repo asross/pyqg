@@ -7,6 +7,8 @@ except ImportError:
         "Please install Xarray in order to activate this feature. "
         "Instructions at http://xarray.pydata.org/en/stable/getting-started-guide/installing.html#instructions"
     )
+
+import numpy.fft as npfft
     
 from pyqg.errors import DiagnosticNotFilledError
 
@@ -41,9 +43,15 @@ var_attr_database = {
     'ph': {'long_name': 'streamfunction in spectral space', 'units': 'meters squared second ^-1',},
     'Ubg': {'long_name': 'background zonal velocity', 'units': 'meters second ^-1',},
     'Qy': {'long_name': 'background potential vorticity gradient', 'units': 'second ^-1 meter ^-1',} , 
-    'dqhdt': {'long_name': 'time derivative of potential vorticity in spectral space', 'units': 'second ^-2',},
-    'dqdt': {'long_name': 'time derivative of potential vorticity in real space', 'units': 'second ^-2',},
+    'dqhdt': {'long_name': 'previous time derivative of potential vorticity in spectral space', 'units': 'second ^-2',},
+    'dqdt': {'long_name': 'previous time derivative of potential vorticity in real space', 'units': 'second ^-2',},
     'p': {'long_name': 'streamfunction in real space', 'units': 'meters squared second ^-1',},
+}
+
+# dict for variables to invert back to spatial from spectral
+vars_to_invert = {
+    'dqhdt': 'dqdt',
+    'ph': 'p'
 }
 
 # dict for coordinate dimensions
@@ -121,6 +129,13 @@ def model_to_dataset(m):
                 variables[vname] = (dim_database[vname], data[np.newaxis,...], var_attr_database[vname])
             else:
                 variables[vname] = (dim_database[vname], data, var_attr_database[vname])
+
+    # Convert a subset of spectral variables to spatial
+    for spectral_var, spatial_var in vars_to_invert.items():
+        if hasattr(m, spectral_var):
+            data = getattr(m, spectral_var, None)
+            data = npfft.irfftn(data, axes=(-2,-1))
+            variables[spatial_var] = (spatial_dims, data[np.newaxis,...], var_attr_database[spatial_var])
 
     # Create a dictionary of coordinates
     coordinates = {}
